@@ -19,12 +19,12 @@ export async function getStaticPaths() {
   const filtered = all.filter(p => p.pageType !== "home");
 
   return filtered.map(p => ({
-    params: { slug: p.slug.split("/") },
+   params: { slug: p.slug },
     props: { pageType: p.pageType },
   }));
 }
 
-const slug = (Astro.params.slug ?? []).join("/");
+const slug = Astro.params.slug;
 const page = await sanityFetch<any>({ query: pageBySlugQuery, params: { slug } });
 
 if (!page) throw new Error(`Page not found: ${slug}`);
