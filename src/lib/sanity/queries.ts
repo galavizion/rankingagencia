@@ -10,19 +10,17 @@ export const homeQuery = groq`
     _key,
     _type,
 
-    // ===== Hero =====
     _type == "sectionHero" => {
-   heading,
-  subheading,
-  bullets,
-  image,
-  primaryCta,
-  secondaryCta,
-  settings
+      heading,
+      subheading,
+      bullets,
+      image,
+      primaryCta,
+      secondaryCta,
+      settings
     },
 
-    // ===== Benefits =====
-    _type == "sectionBenefits" => {
+_type == "sectionBenefits" => {
       title,
       subtitle,
       items[]{
@@ -34,8 +32,7 @@ export const homeQuery = groq`
       settings
     },
 
-    // ===== Process =====
-    _type == "sectionProcess" => {
+_type == "sectionProcess" => {
       title,
       subtitle,
       steps[]{
@@ -46,8 +43,7 @@ export const homeQuery = groq`
       settings
     },
 
-    // ===== FAQ =====
-    _type == "sectionFAQ" => {
+  _type == "sectionFAQ" => {
       title,
       subtitle,
       faqs[]{
@@ -57,12 +53,26 @@ export const homeQuery = groq`
       settings
     },
 
-    // ===== CTA =====
-    _type == "sectionCTA" => {
+_type == "sectionCTA" => {
       title,
       subtitle,
       primaryCta,
       secondaryCta,
+      settings
+    },
+    _type == "sectionContentSplit" => {
+  sectionId,
+  title,
+  layout,
+  imageSide,
+  image,
+  content,
+  settings
+},
+
+    _type == "sectionRichText" => {
+      title,
+      content,
       settings
     }
   }
@@ -80,13 +90,13 @@ export const pageBySlugQuery = groq`
     _type,
 
     _type == "sectionHero" => {
-   heading,
-  subheading,
-  bullets,
-  image,
-  primaryCta,
-  secondaryCta,
-  settings
+      heading,
+      subheading,
+      bullets,
+      image,
+      primaryCta,
+      secondaryCta,
+      settings
     },
 
     _type == "sectionBenefits" => {
@@ -128,6 +138,20 @@ export const pageBySlugQuery = groq`
       primaryCta,
       secondaryCta,
       settings
+    },
+_type == "sectionContentSplit" => {
+  sectionId,
+  title,
+  layout,
+  imageSide,
+  image,
+  content,
+  settings
+},
+    _type == "sectionRichText" => {
+      title,
+      content,
+      settings
     }
   }
 }
@@ -136,7 +160,8 @@ export const pageBySlugQuery = groq`
 // ✅ Slugs para prerender (solo service/landing)
 export const allPageSlugsQuery = groq`
 *[_type=="page" && pageType in ["service","landing"] && defined(slug.current)][]{
-  "slug": slug.current
+  "slug": slug.current,
+  pageType
 }
 `;
 
