@@ -1,10 +1,10 @@
 ---
 import { sanityClient } from "../lib/sanity";
 import { resolveHref } from "../lib/nav";
+import { SITE_SETTINGS_QUERY } from "../lib/sanity/queries";
 import type { NavItem } from "../lib/types";
-import { siteSettingsQuery } from "../lib/queries";
 
-const settings = await sanityClient.fetch(siteSettingsQuery);
+const settings = await sanityClient.fetch(SITE_SETTINGS_QUERY);
 const nav: NavItem[] = settings?.navigation ?? [];
 ---
 

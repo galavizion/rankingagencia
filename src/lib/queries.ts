@@ -27,8 +27,29 @@ export const POST_BY_SLUG = /* groq */ `
 // lib/queries.js
 export const siteSettingsQuery = /* groq */ `
 *[_type == "siteSettings"][0]{
+  siteName,
+  siteUrl,
+  defaultTitle,
+  defaultDescription,
+  "defaultOgImage": defaultOgImage.asset->url,
+  analyticsId,
+  tagManagerId,
+  adsenseClient,
+  searchConsoleVerification,
+
   "logoUrl": logo.asset->url,
-  cta{label, url},
+
+  cta{
+    label,
+    url
+  },
+
+  organization{
+    phone,
+    email,
+    sameAs
+  },
+
   navigation[]{
     label,
     type,

@@ -36,7 +36,11 @@ const priceText =
 ========================= */
 const siteUrl = "https://www.rankingagencia.com";
 const canonical = `${siteUrl}/catalogo/${slug}/`;
-
+const pageTitle = item?.seo?.title || item?.title || "Catálogo";
+const pageDesc =
+  item?.seo?.description ||
+  item?.excerpt ||
+  "Elemento del catálogo de Ranking Agencia.";
 // Heurística: si tu category trae "producto", usa Product. Si no, Service.
 const cat = String(item?.category || "").toLowerCase();
 const isProduct = cat.includes("producto");
@@ -48,6 +52,7 @@ const schema: Record<string, any> = {
   name: item?.title ?? "Servicio",
   description: item?.excerpt ?? "Servicio del catálogo de Ranking Agencia.",
   url: canonical,
+  
   ...(cover ? { image: [cover] } : {}),
   provider: {
     "@type": "Organization",
@@ -74,8 +79,10 @@ if (item?.price != null) {
 ---
 
 <BaseLayout
-  title={`${item?.title ?? "Catálogo"} | Ranking Agencia`}
+  title={`${pageTitle} | Ranking Agencia`}
+  description={pageDesc}
   canonical={`https://www.rankingagencia.com/catalogo/${slug}/`}
+  seo={item?.seo}
   schema={schema}
 >
   <main class="container product-wrap">

@@ -28,7 +28,16 @@ export const SERVICE_BY_SLUG = /* groq */ `
   processSteps,
   faqs,
   content,
-  seoTitle,
-  seoDescription
+  seo{
+    title,
+    description,
+    canonical,
+    noindex,
+    ogImage{
+      asset->{
+        url
+      }
+    }
+  }
 }
 `

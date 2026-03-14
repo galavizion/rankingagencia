@@ -6,85 +6,17 @@ export const homeQuery = groq`
 *[_type=="page" && pageType=="home"][0]{
   title,
   pageType,
-  sections[]{
-    _key,
-    _type,
-
-    _type == "sectionHero" => {
-      heading,
-      subheading,
-      bullets,
-      image,
-      primaryCta,
-      secondaryCta,
-      settings
-    },
-
-_type == "sectionBenefits" => {
-      title,
-      subtitle,
-      items[]{
-        title,
-        description,
-        highlight,
-        icon
-      },
-      settings
-    },
-
-_type == "sectionProcess" => {
-      title,
-      subtitle,
-      steps[]{
-        title,
-        description,
-        icon
-      },
-      settings
-    },
-
-  _type == "sectionFAQ" => {
-      title,
-      subtitle,
-      faqs[]{
-        question,
-        answer
-      },
-      settings
-    },
-
-_type == "sectionCTA" => {
-      title,
-      subtitle,
-      primaryCta,
-      secondaryCta,
-      settings
-    },
-    _type == "sectionContentSplit" => {
-  sectionId,
-  title,
-  layout,
-  imageSide,
-  image,
-  content,
-  settings
-},
-
-    _type == "sectionRichText" => {
-      title,
-      content,
-      settings
+  seo{
+    title,
+    description,
+    canonical,
+    noindex,
+    ogImage{
+      asset->{
+        url
+      }
     }
-  }
-}
-`;
-
-// ✅ Cualquier página por slug (service/landing)
-export const pageBySlugQuery = groq`
-*[_type=="page" && slug.current==$slug][0]{
-  title,
-  pageType,
-  "slug": slug.current,
+  },
   sections[]{
     _key,
     _type,
@@ -139,15 +71,108 @@ export const pageBySlugQuery = groq`
       secondaryCta,
       settings
     },
-_type == "sectionContentSplit" => {
-  sectionId,
+
+    _type == "sectionContentSplit" => {
+      sectionId,
+      title,
+      layout,
+      imageSide,
+      image,
+      content,
+      settings
+    },
+
+    _type == "sectionRichText" => {
+      title,
+      content,
+      settings
+    }
+  }
+}
+`;
+
+// ✅ Cualquier página por slug (service/landing)
+export const pageBySlugQuery = groq`
+*[_type=="page" && slug.current==$slug][0]{
   title,
-  layout,
-  imageSide,
-  image,
-  content,
-  settings
-},
+  pageType,
+  "slug": slug.current,
+  seo{
+    title,
+    description,
+    canonical,
+    noindex,
+    ogImage{
+      asset->{
+        url
+      }
+    }
+  },
+  sections[]{
+    _key,
+    _type,
+
+    _type == "sectionHero" => {
+      heading,
+      subheading,
+      bullets,
+      image,
+      primaryCta,
+      secondaryCta,
+      settings
+    },
+
+    _type == "sectionBenefits" => {
+      title,
+      subtitle,
+      items[]{
+        title,
+        description,
+        highlight,
+        icon
+      },
+      settings
+    },
+
+    _type == "sectionProcess" => {
+      title,
+      subtitle,
+      steps[]{
+        title,
+        description,
+        icon
+      },
+      settings
+    },
+
+    _type == "sectionFAQ" => {
+      title,
+      subtitle,
+      faqs[]{
+        question,
+        answer
+      },
+      settings
+    },
+
+    _type == "sectionCTA" => {
+      title,
+      subtitle,
+      primaryCta,
+      secondaryCta,
+      settings
+    },
+
+    _type == "sectionContentSplit" => {
+      sectionId,
+      title,
+      layout,
+      imageSide,
+      image,
+      content,
+      settings
+    },
+
     _type == "sectionRichText" => {
       title,
       content,
@@ -192,12 +217,67 @@ export const CATALOG_BY_SLUG = groq`
   category,
   coverImage,
   body,
- price,
+  price,
   priceLabel,
   whatsapp{
     enabled,
     phone,
     message
+  },
+  seo{
+    title,
+    description,
+    canonical,
+    noindex,
+    ogImage{
+      asset->{
+        url
+      }
+    }
+  }
+}
+`;
+
+
+// lib/queries.js
+export const SITE_SETTINGS_QUERY = groq`
+*[_type == "siteSettings"][0]{
+  siteName,
+  siteUrl,
+  defaultTitle,
+  defaultDescription,
+  "defaultOgImage": defaultOgImage.asset->url,
+  analyticsId,
+  tagManagerId,
+  adsenseClient,
+  searchConsoleVerification,
+
+  "logoUrl": logo.asset->url,
+
+  cta{
+    label,
+    url
+  },
+
+  organization{
+    phone,
+    email,
+    sameAs
+  },
+
+  navigation[]{
+    label,
+    type,
+    anchorId,
+    externalUrl,
+    internalPage->{ "slug": slug.current, title },
+    children[]{
+      label,
+      type,
+      anchorId,
+      externalUrl,
+      internalPage->{ "slug": slug.current, title }
+    }
   }
 }
 `;

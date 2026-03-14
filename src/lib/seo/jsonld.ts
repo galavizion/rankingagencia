@@ -1,18 +1,58 @@
 // src/lib/seo/jsonld.ts
+
 type Img = string | null | undefined;
 
 const clean = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 
-export const buildOrgSchema = (siteUrl: string) =>
+/* =====================================================
+ORGANIZATION
+===================================================== */
+export const buildOrgSchema = (siteUrl: string, settings?: any) =>
   clean({
     "@context": "https://schema.org",
     "@type": "Organization",
+    name: settings?.siteName || "Ranking Agencia",
+    url: siteUrl,
+    description:
+      settings?.defaultDescription ||
+      "Consultoría de SEO, publicidad digital, desarrollo web y automatización para empresas.",
+    logo: settings?.logoUrl || `${siteUrl}/media/ranking-agencia.svg`,
+    email: settings?.organization?.email || undefined,
+    sameAs: settings?.organization?.sameAs || [],
+    contactPoint: settings?.organization?.phone
+      ? [
+          {
+            "@type": "ContactPoint",
+            telephone: settings.organization.phone,
+            contactType: "customer service",
+            areaServed: "MX",
+            availableLanguage: ["es"],
+          },
+        ]
+      : undefined,
+  });
+/* =====================================================
+WEBSITE
+===================================================== */
+
+export const buildWebsiteSchema = (siteUrl: string) =>
+  clean({
+    "@context": "https://schema.org",
+    "@type": "WebSite",
     name: "Ranking Agencia",
     url: siteUrl,
-    description: "SEO y Publicidad Digital enfocados en generar ventas.",
+    description:
+      "Consultor SEO y estrategias de marketing digital para empresas que buscan generar más clientes desde internet.",
   });
 
-export const buildBreadcrumb = (siteUrl: string, items: { name: string; url: string }[]) =>
+/* =====================================================
+BREADCRUMB
+===================================================== */
+
+export const buildBreadcrumb = (
+  siteUrl: string,
+  items: { name: string; url: string }[]
+) =>
   clean({
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -24,6 +64,10 @@ export const buildBreadcrumb = (siteUrl: string, items: { name: string; url: str
     })),
   });
 
+/* =====================================================
+SERVICE
+===================================================== */
+
 export const buildServiceSchema = (args: {
   siteUrl: string;
   name: string;
@@ -31,31 +75,46 @@ export const buildServiceSchema = (args: {
   url: string;
   image?: Img;
   price?: number | null;
-  priceCurrency?: string; // "MXN"
+  priceCurrency?: string;
 }) =>
   clean({
     "@context": "https://schema.org",
     "@type": "Service",
     name: args.name,
     description: args.description,
-    url: args.url.startsWith("http") ? args.url : `${args.siteUrl}${args.url}`,
+    url: args.url.startsWith("http")
+      ? args.url
+      : `${args.siteUrl}${args.url}`,
     image: args.image || undefined,
+
     provider: {
       "@type": "Organization",
       name: "Ranking Agencia",
       url: args.siteUrl,
     },
+
+    areaServed: {
+      "@type": "Country",
+      name: "Mexico",
+    },
+
     offers:
       args.price != null
         ? {
             "@type": "Offer",
             priceCurrency: args.priceCurrency || "MXN",
             price: args.price,
-            url: args.url.startsWith("http") ? args.url : `${args.siteUrl}${args.url}`,
+            url: args.url.startsWith("http")
+              ? args.url
+              : `${args.siteUrl}${args.url}`,
             availability: "https://schema.org/InStock",
           }
         : undefined,
   });
+
+/* =====================================================
+PRODUCT
+===================================================== */
 
 export const buildProductSchema = (args: {
   siteUrl: string;
@@ -64,9 +123,9 @@ export const buildProductSchema = (args: {
   url: string;
   image?: Img;
   price?: number | null;
-  priceCurrency?: string; // "MXN"
+  priceCurrency?: string;
   sku?: string;
-  brand?: string; // "Ranking Agencia"
+  brand?: string;
 }) =>
   clean({
     "@context": "https://schema.org",
@@ -75,20 +134,29 @@ export const buildProductSchema = (args: {
     description: args.description,
     image: args.image ? [args.image] : undefined,
     sku: args.sku,
-    brand: args.brand
-      ? { "@type": "Brand", name: args.brand }
-      : { "@type": "Brand", name: "Ranking Agencia" },
+
+    brand: {
+      "@type": "Brand",
+      name: args.brand || "Ranking Agencia",
+    },
+
     offers:
       args.price != null
         ? {
             "@type": "Offer",
             priceCurrency: args.priceCurrency || "MXN",
             price: args.price,
-            url: args.url.startsWith("http") ? args.url : `${args.siteUrl}${args.url}`,
+            url: args.url.startsWith("http")
+              ? args.url
+              : `${args.siteUrl}${args.url}`,
             availability: "https://schema.org/InStock",
           }
         : undefined,
   });
+
+/* =====================================================
+ARTICLE
+===================================================== */
 
 export const buildArticleSchema = (args: {
   siteUrl: string;
@@ -104,18 +172,29 @@ export const buildArticleSchema = (args: {
     "@type": "Article",
     headline: args.headline,
     description: args.description,
-    mainEntityOfPage: args.url.startsWith("http") ? args.url : `${args.siteUrl}${args.url}`,
+
+    mainEntityOfPage: args.url.startsWith("http")
+      ? args.url
+      : `${args.siteUrl}${args.url}`,
+
     image: args.image ? [args.image] : undefined,
+
     datePublished: args.datePublished,
     dateModified: args.dateModified || args.datePublished,
+
     author: {
       "@type": "Organization",
       name: "Ranking Agencia",
       url: args.siteUrl,
     },
+
     publisher: {
       "@type": "Organization",
       name: "Ranking Agencia",
       url: args.siteUrl,
+      logo: {
+        "@type": "ImageObject",
+        url: `${args.siteUrl}/media/ranking-agencia.svg`,
+      },
     },
   });

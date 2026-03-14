@@ -15,7 +15,6 @@ export async function getStaticPaths() {
     params: { slug: s.slug },
   }));
 }
-
 type Post = {
   title: string;
   excerpt?: string;
@@ -23,12 +22,23 @@ type Post = {
   _updatedAt?: string;
   mainImage?: any;
   body?: any[];
+  faqs?: { q?: string; a?: string }[];
   categories?: { title?: string }[];
   author?: { name?: string; slug?: { current?: string } } | null;
+  seo?: {
+    title?: string;
+    description?: string;
+    canonical?: string;
+    noindex?: boolean;
+    ogImage?: {
+      asset?: {
+        url?: string;
+      };
+    };
+  };
 };
 
 const { slug } = Astro.params;
-
 const post = await sanity.fetch<Post>(
   `*[_type=="post" && slug.current == $slug][0]{
     title,
@@ -37,17 +47,39 @@ const post = await sanity.fetch<Post>(
     _updatedAt,
     mainImage,
     body,
+    faqs[]{
+      q,
+      a
+    },
     categories[]->{title},
-    author->{name, slug}
+    author->{name, slug},
+    seo{
+      title,
+      description,
+      canonical,
+      noindex,
+      ogImage{
+        asset->{
+          url
+        }
+      }
+    }
   }`,
   { slug }
 );
 
 // SEO + meta
 const SITE = "https://www.rankingagencia.com";
-const title = post?.title ?? "Artículo";
-const description = post?.excerpt ?? "Artículo de Ranking Insights.";
-const canonical = `${SITE}/blog/${slug}/`;
+const title = post?.seo?.title || post?.title || "Artículo";
+
+const description =
+  post?.seo?.description ||
+  post?.excerpt ||
+  "Artículo de Ranking Insights.";
+
+const canonical =
+  post?.seo?.canonical ||
+  `${SITE}/blog/${slug}/`;
 
 const dateISO = post?.publishedAt ? new Date(post.publishedAt).toISOString() : "";
 const datePretty = post?.publishedAt
@@ -138,23 +170,42 @@ const articleSchema: any = {
       ? { "@type": "Organization", name: "Ranking Agencia", url: SITE }
       : { "@type": "Person", name: AUTHOR_NAME, url: AUTHOR_URL },
   publisher: { "@type": "Organization", name: "Ranking Agencia", url: SITE },
-  // Bonus: readingTime como duración (no obligatorio, pero suma)
   ...(readingTime ? { timeRequired: `PT${readingTime}M` } : {}),
 };
-
+const faqSchema =
+  Array.isArray(post?.faqs) && post.faqs.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: post.faqs
+          .filter((f) => f?.q && f?.a)
+          .map((f) => ({
+            "@type": "Question",
+            name: f.q,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: f.a,
+            },
+          })),
+      }
+    : null;
 // ⚠️ AdSense
 const ADSENSE_CLIENT = "ca-pub-XXXXXXXXXXXXXXX"; // <- cámbialo
 ---
 
 <BaseLayout title={title} description={description}>
   <!-- ✅ Schema: Breadcrumb + BlogPosting (no toca diseño) -->
+ <script type="application/ld+json" is:inline>
+  {JSON.stringify(breadcrumbSchema)}
+</script>
+<script type="application/ld+json" is:inline>
+  {JSON.stringify(articleSchema)}
+</script>
+{faqSchema && (
   <script type="application/ld+json" is:inline>
-    {JSON.stringify(breadcrumbSchema)}
+    {JSON.stringify(faqSchema)}
   </script>
-  <script type="application/ld+json" is:inline>
-    {JSON.stringify(articleSchema)}
-  </script>
-
+)}
   <main class="post">
     <div class="container">
       <!-- Breadcrumb -->

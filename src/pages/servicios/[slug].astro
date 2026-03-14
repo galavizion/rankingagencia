@@ -34,8 +34,17 @@ type Service = {
   processSteps?: Step[];
   faqs?: Faq[];
   content?: any[];
-  seoTitle?: string;
-  seoDescription?: string;
+  seo?: {
+    title?: string;
+    description?: string;
+    canonical?: string;
+    noindex?: boolean;
+    ogImage?: {
+      asset?: {
+        url?: string;
+      };
+    };
+  };
 };
 
 const service = await sanity.fetch<Service>(SERVICE_BY_SLUG, { slug });
@@ -43,10 +52,9 @@ const service = await sanity.fetch<Service>(SERVICE_BY_SLUG, { slug });
 const SITE = "https://www.rankingagencia.com";
 const canonical = `${SITE}/servicios/${slug}/`;
 
-const pageTitle = service?.seoTitle || service?.title || "Servicio";
+const pageTitle = service?.seo?.title || service?.title || "Servicio";
 const pageDesc =
-  service?.seoDescription || service?.excerpt || "Servicio de Ranking Agencia.";
-
+  service?.seo?.description || service?.excerpt || "Servicio de Ranking Agencia.";
 // ✅ Imagen para schema (si hay coverImage)
 const coverUrl = service?.coverImage
   ? urlFor(service.coverImage).width(1200).height(630).fit("crop").url()
@@ -145,6 +153,7 @@ const miSchema: any = {
   title={`${pageTitle} | Ranking Agencia`}
   description={pageDesc}
   canonical={canonical}
+  seo={service?.seo}
 >
   <!-- ✅ Schemas extra (no afectan estilo) -->
   <script type="application/ld+json" is:inline>
