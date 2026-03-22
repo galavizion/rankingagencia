@@ -4,28 +4,34 @@ const { settings } = Astro.props;
 
 const theme = settings?.theme ?? "transparent";
 const sectionId = settings?.id;
+
 const {
-  title = "¿Listo para hacerlo bien?",
-  subtitle = "Dime qué estás construyendo y te digo cómo lo haría para que convierta.",
-  primaryCta = { label: "Contáctame", href: "/contacto" },
+  title,
+  subtitle,
+  primaryCta,
   secondaryCta,
 } = Astro.props as {
   title?: string;
   subtitle?: string;
-  primaryCta?: CTA;
-  secondaryCta?: CTA;
+  primaryCta?: CTA | null;
+  secondaryCta?: CTA | null;
 };
+
+// Sanity puede devolver null explícito, los defaults de desestructuración no cubren eso
+const resolvedTitle = title ?? "¿Listo para hacerlo bien?";
+const resolvedSubtitle = subtitle ?? "Dime qué estás construyendo y te digo cómo lo haría para que convierta.";
+const resolvedPrimary = primaryCta ?? { label: "Contáctame", href: "/contacto" };
 ---
 
 <section id={sectionId} class={`section section--${theme}`}>
   <div class="container">
     <div class="cta__card">
       <div class="cta__copy">
-        <h2>{title}</h2>
-        <p>{subtitle}</p>
+        <h2>{resolvedTitle}</h2>
+        <p>{resolvedSubtitle}</p>
       </div>
       <div class="cta__actions">
-        <a class="btn btn--primary" href={primaryCta.href}>{primaryCta.label}</a>
+        <a class="btn btn--primary" href={resolvedPrimary.href}>{resolvedPrimary.label}</a>
         {secondaryCta?.href ? (
           <a class="btn btn--ghost" href={secondaryCta.href}>{secondaryCta.label}</a>
         ) : null}
@@ -35,7 +41,6 @@ const {
 </section>
 
 <style>
-   
   .container{ max-width: 1100px; margin: 0 auto; padding: 0 20px; }
   .cta__card{
     border-radius: 18px;
@@ -48,7 +53,7 @@ const {
     background: linear-gradient(180deg, rgba(230, 6, 6, 0.918), rgba(139, 11, 11, 0.938));
   }
   .cta__copy h2{ margin: 0 0 6px; color: #fff; }
-  .cta__copy p{ margin: 0; opacity: .85; line-height: 1.6; max-width: 60ch; }
+  .cta__copy p{ margin: 0; opacity: .85; line-height: 1.6; max-width: 60ch; color: #fff; }
   .cta__actions{ display:flex; gap: 10px; flex-wrap: wrap; }
   .btn{ display:inline-flex; align-items:center; justify-content:center; padding: 10px 14px; border-radius: 12px; text-decoration:none; font-weight: 600; }
   .btn--primary{ background:#111; color:#fff; }
