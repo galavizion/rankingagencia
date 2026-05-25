@@ -1,17 +1,19 @@
 /* =========================
    THEME TOKENS (solo 1 vez)
 ========================= */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
+
 :root{
-  --thm-font: 'Poppins', sans-serif;
-  --heading-font: 'Poppins', sans-serif;
---bg: #00000025;
+  --thm-font: 'Plus Jakarta Sans', sans-serif;
+  --heading-font: 'Plus Jakarta Sans', sans-serif;
+  --bg: #09090b;
   --thm-base: #ff57a4;
   --thm-base-rgb: 255, 87, 164;
   --thm-primary: #4275ff;
   --thm-primary-rgb: 66, 117, 255;
 
-  --thm-black: #42495b;
-  --thm-black-rgb: 66, 73, 91;
+  --thm-black: #0f172a;
+  --thm-black-rgb: 15, 23, 42;
 
   --thm-gray: #7b86f1;
   --thm-gray-rgb: 123, 134, 241;
@@ -30,17 +32,17 @@
   --nav-h: 72px;
   --nav-h-scrolled: 64px;
     --header-h: 72px;         /* ajusta a tu diseño */
-  --header-bg: rgba(255,255,255,.86);
-  --header-border: rgba(0,0,0,.08);
+  --header-bg: rgba(9, 9, 11, .86);
+  --header-border: rgba(255, 255, 255, .08);
 
   /* UI */
   --radius: 10px;
 
-  --gs-text: rgba(15,23,42,.92);
-    --gs-muted: rgba(15,23,42,.62);
-    --gs-border: rgba(15,23,42,.12);
-    --gs-bg: #ffffff;
-    --gs-radius: 16px;
+  --gs-text: rgba(255, 255, 255, .92);
+  --gs-muted: rgba(255, 255, 255, .62);
+  --gs-border: rgba(255, 255, 255, .12);
+  --gs-bg: #111418;
+  --gs-radius: 16px;
 }
 
 /* =========================
@@ -53,37 +55,41 @@ html{ scroll-behavior: smooth; }
 body{
   margin: 0;
   font-family: var(--thm-font);
-  color: #eaeaea; /* importante si lo dejamos oscuro */
-  font-size: 14px;
-  line-height: 1.35;
-
-  background: linear-gradient(
-    -75deg, 
-   #16b988, #e73c7e, #23a6d5, #332b79);
-
- 
-  background-size: 450% 450%;
-  animation: gradient 55s ease infinite;
-}
-
-@keyframes gradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  color: var(--gs-text);
+  font-size: 15px;
+  line-height: 1.5;
+  background-color: var(--bg);
+  /* Sutil glow radial de fondo para dark mode */
+  background-image: radial-gradient(circle at top right, rgba(66, 117, 255, 0.1), transparent 400px), radial-gradient(circle at bottom left, rgba(168, 85, 247, 0.05), transparent 400px);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 img{ max-width: 100%; height: auto; display: block; }
 
-a{ color: inherit; text-decoration: none; }
-a:hover{ text-decoration: none; }
+a{ color: var(--thm-primary); text-decoration: none; transition: color 0.2s; }
+a:hover{ text-decoration: none; color: #6b93ff; }
 
 h1,h2,h3,h4,h5,h6{
   font-family: var(--heading-font);
-  margin: 0 0 12px;
-  color: #111;
+  margin: 0 0 16px;
+  color: #ffffff;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  font-weight: 800;
 }
 
-p{ margin: 0 0 14px; }
+/* Clases Utilitarias Modernas */
+.text-gradient {
+  background: linear-gradient(135deg, #4275ff 0%, #a855f7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+}
+
+p{ margin: 0 0 14px; color: var(--gs-muted); }
 
 /* =========================
    CONTAINERS

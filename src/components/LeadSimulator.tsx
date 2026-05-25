@@ -1,18 +1,18 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 
 const MOCK_MESSAGE = "Hola, busco cotización de un sistema contra incendios para una nave industrial de 3,000m², mi presupuesto es de como $120,000 MXN...";
 
-export const LeadSimulator = () => {
+export default function LeadSimulator() {
   const [typedText, setTypedText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   
   // Data extraída (simulada)
   const [extractedData, setExtractedData] = useState({
-    necesidad: null,
-    tamano: null,
-    presupuesto: null,
-    estado: null
+    necesidad: null as string | null,
+    tamano: null as string | null,
+    presupuesto: null as string | null,
+    estado: null as string | null
   });
 
   const typingSpeed = 40; // ms por carácter
@@ -25,7 +25,7 @@ export const LeadSimulator = () => {
       const timeout = setTimeout(() => {
         setTypedText(MOCK_MESSAGE.substring(0, typedText.length + 1));
         
-        // Simulación de extracción de datos "en vivo" basada en lo que se ha escrito
+        // Simulación de extracción de datos
         const currentText = MOCK_MESSAGE.substring(0, typedText.length + 1).toLowerCase();
         
         setExtractedData(prev => ({
@@ -40,7 +40,7 @@ export const LeadSimulator = () => {
       return () => clearTimeout(timeout);
     } else {
       setIsTyping(false);
-      // Reiniciar después de unos segundos para que la animación sea infinita
+      // Reiniciar después de unos segundos
       const resetTimeout = setTimeout(() => {
         setTypedText('');
         setExtractedData({
@@ -56,7 +56,6 @@ export const LeadSimulator = () => {
     }
   }, [typedText, hasStarted]);
 
-  // Iniciar la animación al montar o cuando el componente es visible (simplificado: al hacer clic o al montar)
   useEffect(() => {
     const startDelay = setTimeout(() => setHasStarted(true), 1000);
     return () => clearTimeout(startDelay);
@@ -76,7 +75,7 @@ export const LeadSimulator = () => {
         <div style={styles.chatBody}>
           <div style={styles.chatBubble}>
             {typedText}
-            {isTyping && <span style={styles.cursor}>|</span>}
+            {isTyping && <span className="anim-blink" style={styles.cursor}>|</span>}
           </div>
         </div>
         <div style={styles.chatFooter}>
@@ -89,7 +88,7 @@ export const LeadSimulator = () => {
       <div style={styles.backendColumn}>
         <div style={styles.backendHeader}>
           <span style={{ fontSize: '14px', fontWeight: 'bold' }}>⚡ Supabase + gpt-4o-mini</span>
-          <span style={styles.pulse}>● live</span>
+          <span className="anim-pulse" style={styles.pulse}>● live</span>
         </div>
         <div style={styles.backendBody}>
           <div style={{ marginBottom: '16px', fontSize: '12px', color: '#8b949e' }}>
@@ -99,7 +98,7 @@ export const LeadSimulator = () => {
           <div style={styles.dataRow}>
             <span style={styles.dataLabel}>Necesidad:</span>
             {extractedData.necesidad ? (
-              <span style={styles.dataValueBadge}>{extractedData.necesidad} 🟢</span>
+              <span className="anim-fadeIn" style={styles.dataValueBadge}>{extractedData.necesidad} 🟢</span>
             ) : (
               <span style={styles.dataWaiting}>Esperando...</span>
             )}
@@ -108,7 +107,7 @@ export const LeadSimulator = () => {
           <div style={styles.dataRow}>
             <span style={styles.dataLabel}>Tamaño:</span>
             {extractedData.tamano ? (
-              <span style={styles.dataValueBadge}>{extractedData.tamano} 🟢</span>
+              <span className="anim-fadeIn" style={styles.dataValueBadge}>{extractedData.tamano} 🟢</span>
             ) : (
               <span style={styles.dataWaiting}>Esperando...</span>
             )}
@@ -117,7 +116,7 @@ export const LeadSimulator = () => {
           <div style={styles.dataRow}>
             <span style={styles.dataLabel}>Presupuesto:</span>
             {extractedData.presupuesto ? (
-              <span style={styles.dataValueBadge}>{extractedData.presupuesto} 🟢</span>
+              <span className="anim-fadeIn" style={styles.dataValueBadge}>{extractedData.presupuesto} 🟢</span>
             ) : (
               <span style={styles.dataWaiting}>Esperando...</span>
             )}
@@ -126,7 +125,7 @@ export const LeadSimulator = () => {
           <div style={{...styles.dataRow, marginTop: '24px', borderTop: '1px solid #30363d', paddingTop: '16px'}}>
             <span style={styles.dataLabel}>Estado del Lead:</span>
             {extractedData.estado ? (
-              <span style={{...styles.dataValueBadge, background: 'rgba(255, 105, 0, 0.2)', color: '#ff6900', border: '1px solid rgba(255, 105, 0, 0.4)'}}>
+              <span className="anim-fadeIn" style={{...styles.dataValueBadge, background: 'rgba(255, 105, 0, 0.2)', color: '#ff6900', border: '1px solid rgba(255, 105, 0, 0.4)'}}>
                 {extractedData.estado} 🔥
               </span>
             ) : (
@@ -137,9 +136,9 @@ export const LeadSimulator = () => {
       </div>
     </div>
   );
-};
+}
 
-const styles: Record<string, React.CSSProperties> = {
+const styles: Record<string, import('react').CSSProperties> = {
   container: {
     display: 'flex',
     flexDirection: 'row',
@@ -147,7 +146,7 @@ const styles: Record<string, React.CSSProperties> = {
     maxWidth: '900px',
     margin: '40px auto',
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-    flexWrap: 'wrap', // Para móviles
+    flexWrap: 'wrap',
   },
   chatColumn: {
     flex: '1 1 350px',
@@ -197,7 +196,6 @@ const styles: Record<string, React.CSSProperties> = {
   },
   cursor: {
     display: 'inline-block',
-    animation: 'blink 1s step-end infinite',
     marginLeft: '2px',
     fontWeight: 'bold',
   },
@@ -251,7 +249,6 @@ const styles: Record<string, React.CSSProperties> = {
     color: '#3fb950',
     fontSize: '12px',
     fontWeight: 'bold',
-    animation: 'pulse 2s infinite',
   },
   backendBody: {
     padding: '24px 20px',
@@ -277,7 +274,6 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '13px',
     fontWeight: 'bold',
     border: '1px solid rgba(63, 185, 80, 0.4)',
-    animation: 'fadeIn 0.3s ease-in-out',
   },
   dataWaiting: {
     fontSize: '13px',
@@ -285,33 +281,3 @@ const styles: Record<string, React.CSSProperties> = {
     fontStyle: 'italic',
   }
 };
-
-// Necesario agregar keyframes para animaciones. Como estamos en react puro con inline styles,
-// inyectaremos un tag <style> directamente o dejaremos que CSS global lo maneje.
-// Para este componente aislado, usar un tag style es más fácil.
-const StyleInjector = () => (
-  <style>{`
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
-    }
-    @keyframes pulse {
-      0% { opacity: 1; }
-      50% { opacity: 0.5; }
-      100% { opacity: 1; }
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(5px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  `}</style>
-);
-
-export default function LeadSimulatorWrapper() {
-  return (
-    <>
-      <StyleInjector />
-      <LeadSimulator />
-    </>
-  );
-}
