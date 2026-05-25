@@ -1,5 +1,6 @@
 import { defineConfig } from "sanity";
 import { structureTool } from "sanity/structure";
+import { postSchema } from "./src/lib/sanity/schema";
 
 export default defineConfig({
   name: "default",
@@ -11,6 +12,6 @@ export default defineConfig({
   plugins: [structureTool()],
 
   schema: {
-    types: [], // Añade tus esquemas aquí
+    types: [postSchema],
   },
 });
