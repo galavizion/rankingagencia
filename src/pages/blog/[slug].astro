@@ -11,9 +11,11 @@ export async function getStaticPaths() {
     `*[_type=="post" && defined(slug.current)][]{"slug": slug.current}`
   );
 
-  return (slugs ?? []).map((s) => ({
-    params: { slug: s.slug },
-  }));
+  return (slugs ?? [])
+    .filter((s) => s.slug && !s.slug.includes("/"))
+    .map((s) => ({
+      params: { slug: s.slug },
+    }));
 }
 type Post = {
   title: string;
