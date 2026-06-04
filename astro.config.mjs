@@ -12,7 +12,7 @@ export default defineConfig({
     react(),
     sanity({
       projectId: env.PUBLIC_SANITY_PROJECT_ID || "e6n3tgu1",
-      dataset: env.PUBLIC_SANITY_DATASET || "production",
+      dataset: env.PUBLIC_SANITY_DATASET || "dev",
       useCdn: false,
       studioBasePath: "/studio",
     }),

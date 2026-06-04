@@ -23,7 +23,7 @@ export default defineConfig({
   title: "Ranking Agencia",
 
   projectId: "e6n3tgu1",
-  dataset: "production",
+  dataset: "dev",
 
   plugins: [
     structureTool({
