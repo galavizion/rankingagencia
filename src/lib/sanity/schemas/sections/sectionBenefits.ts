@@ -45,6 +45,5 @@ export const sectionBenefits = defineType({
   ],
   preview: {
     select: { title: "title" },
-    prepare: ({ title }) => ({ title: title ?? "Beneficios", subtitle: "Sección Beneficios" }),
   },
 });

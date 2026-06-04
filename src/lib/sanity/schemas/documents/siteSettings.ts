@@ -58,6 +58,5 @@ export const siteSettingsDocument = defineType({
   ],
   preview: {
     select: { title: "siteName" },
-    prepare: ({ title }) => ({ title: title ?? "Configuración del Sitio" }),
   },
 });

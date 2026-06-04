@@ -13,6 +13,5 @@ export const sectionCTA = defineType({
   ],
   preview: {
     select: { title: "title" },
-    prepare: ({ title }) => ({ title: title ?? "CTA", subtitle: "Sección CTA" }),
   },
 });

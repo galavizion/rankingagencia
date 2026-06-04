@@ -59,6 +59,5 @@ export const sectionContentSplit = defineType({
   ],
   preview: {
     select: { title: "title" },
-    prepare: ({ title }) => ({ title: title ?? "Contenido", subtitle: "Contenido con Imagen" }),
   },
 });

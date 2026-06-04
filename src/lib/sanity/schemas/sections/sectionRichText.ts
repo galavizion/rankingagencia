@@ -23,6 +23,5 @@ export const sectionRichText = defineType({
   ],
   preview: {
     select: { title: "title" },
-    prepare: ({ title }) => ({ title: title ?? "Texto", subtitle: "Sección Texto Enriquecido" }),
   },
 });

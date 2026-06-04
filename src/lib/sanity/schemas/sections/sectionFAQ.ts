@@ -33,6 +33,5 @@ export const sectionFAQ = defineType({
   ],
   preview: {
     select: { title: "title" },
-    prepare: ({ title }) => ({ title: title ?? "FAQ", subtitle: "Sección FAQ" }),
   },
 });

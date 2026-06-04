@@ -26,6 +26,5 @@ export const sectionHero = defineType({
   ],
   preview: {
     select: { title: "heading" },
-    prepare: ({ title }) => ({ title: title ?? "Hero", subtitle: "Sección Hero" }),
   },
 });

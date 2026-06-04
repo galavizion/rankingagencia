@@ -29,6 +29,5 @@ export const sectionProcess = defineType({
   ],
   preview: {
     select: { title: "title" },
-    prepare: ({ title }) => ({ title: title ?? "Proceso", subtitle: "Sección Proceso" }),
   },
 });
