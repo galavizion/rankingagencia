@@ -1,29 +1,277 @@
 ---
-/* c:\Users\rene\Documents\web ranking\y - copia\src\pages\studio.astro */
-import { Studio } from 'sanity';
-import config from '../../sanity.config'; // Adjust path based on your project structure
+interface NavChild {
+  label: string;
+  type?: string;
+  anchorId?: string;
+  externalUrl?: string;
+  internalPage?: { slug?: string; title?: string };
+}
 
-export const prerender = false;
+interface NavItem extends NavChild {
+  children?: NavChild[];
+}
+
+interface Props {
+  logoUrl?: string;
+  siteName?: string;
+  navigation?: NavItem[];
+  cta?: { label?: string; url?: string };
+}
+
+const { logoUrl, siteName = "Ranking", navigation = [], cta } = Astro.props;
+
+function resolveHref(item: NavChild): string {
+  if (item.type === "anchor" && item.anchorId) return `/#${item.anchorId}`;
+  if (item.type === "external" && item.externalUrl) return item.externalUrl;
+  if (item.type === "internal" && item.internalPage?.slug) return `/${item.internalPage.slug}/`;
+  return "#";
+}
 ---
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="noindex, nofollow" />
-  <title>Admin | Ranking Agencia</title>
-  <style is:global>
-    html,
-    body,
-    #sanity {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-    }
-  </style>
-</head>
-<body>
-  <Studio config={config} client:only="react" />
-</body>
-</html>
+<header class="site-header" role="banner">
+  <div class="container-fluid site-header__inner">
+
+    <a class="site-header__logo" href="/" aria-label="Ir al inicio">
+      {logoUrl
+        ? <img src={logoUrl} alt={siteName} width="160" height="40" loading="eager" />
+        : <span class="site-header__logo-text">{siteName}</span>
+      }
+    </a>
+
+    {navigation.length > 0 && (
+      <nav class="site-header__nav" aria-label="Navegación principal">
+        <ul class="site-header__nav-list">
+          {navigation.map((item) => (
+            <li class={`site-header__nav-item${item.children?.length ? " has-dropdown" : ""}`}>
+              <a href={resolveHref(item)} class="site-header__nav-link">
+                {item.label}
+              </a>
+              {item.children?.length && (
+                <ul class="site-header__dropdown">
+                  {item.children.map((child) => (
+                    <li>
+                      <a href={resolveHref(child)} class="site-header__dropdown-link">
+                        {child.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )}
+
+    <div class="site-header__actions">
+      {cta?.url && (
+        <a href={cta.url} class="btn btn--primary site-header__cta">
+          {cta.label ?? "Contacto"}
+        </a>
+      )}
+
+      <button class="site-header__burger" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+  </div>
+
+  {navigation.length > 0 && (
+    <nav id="mobile-menu" class="site-header__mobile" aria-label="Menú móvil" hidden>
+      <ul>
+        {navigation.map((item) => (
+          <li>
+            <a href={resolveHref(item)}>{item.label}</a>
+            {item.children?.length && (
+              <ul>
+                {item.children.map((child) => (
+                  <li><a href={resolveHref(child)}>{child.label}</a></li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
+        {cta?.url && (
+          <li><a href={cta.url} class="btn btn--primary">{cta.label ?? "Contacto"}</a></li>
+        )}
+      </ul>
+    </nav>
+  )}
+</header>
+
+<script>
+  const burger = document.querySelector('.site-header__burger') as HTMLButtonElement | null;
+  const mobileMenu = document.getElementById('mobile-menu');
+  burger?.addEventListener('click', () => {
+    const open = mobileMenu?.hidden === false;
+    if (mobileMenu) mobileMenu.hidden = open;
+    burger.setAttribute('aria-expanded', String(!open));
+    burger.classList.toggle('is-open', !open);
+  });
+</script>
+
+<style>
+  .site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(10, 10, 20, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    height: var(--header-h, 72px);
+  }
+
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    gap: 24px;
+  }
+
+  .site-header__logo img {
+    display: block;
+    height: 36px;
+    width: auto;
+  }
+
+  .site-header__logo-text {
+    font-size: 20px;
+    font-weight: 800;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .site-header__nav-list {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .site-header__nav-link {
+    display: block;
+    padding: 8px 14px;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: color 0.15s, background 0.15s;
+  }
+
+  .site-header__nav-link:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.07);
+  }
+
+  .has-dropdown {
+    position: relative;
+  }
+
+  .site-header__dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    background: #12121e;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 8px;
+    list-style: none;
+    min-width: 180px;
+  }
+
+  .has-dropdown:hover .site-header__dropdown {
+    display: block;
+  }
+
+  .site-header__dropdown-link {
+    display: block;
+    padding: 8px 12px;
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: none;
+    font-size: 13px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+
+  .site-header__dropdown-link:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.07);
+  }
+
+  .site-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .site-header__cta {
+    font-size: 13px;
+    padding: 9px 18px;
+  }
+
+  .site-header__burger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+  }
+
+  .site-header__burger span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: #fff;
+    border-radius: 2px;
+    transition: transform 0.2s, opacity 0.2s;
+  }
+
+  .site-header__burger.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .site-header__burger.is-open span:nth-child(2) { opacity: 0; }
+  .site-header__burger.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .site-header__mobile {
+    background: #0a0a14;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 16px 20px 24px;
+  }
+
+  .site-header__mobile ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .site-header__mobile a {
+    display: block;
+    padding: 10px 0;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .site-header__mobile .btn {
+    margin-top: 16px;
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+
+  @media (max-width: 768px) {
+    .site-header__nav { display: none; }
+    .site-header__burger { display: flex; }
+    .site-header__cta { display: none; }
+  }
+</style>

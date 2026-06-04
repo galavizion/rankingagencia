@@ -194,7 +194,12 @@ const schemas = [
     </noscript>
   )}
 
-  <Header />
+  <Header
+    logoUrl={settings?.logoUrl}
+    siteName={settings?.siteName}
+    navigation={settings?.navigation}
+    cta={settings?.cta}
+  />
 
   <div class="page-wrapper">
 
