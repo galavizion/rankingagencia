@@ -1,17 +1,71 @@
 import { defineConfig } from "sanity";
 import { structureTool } from "sanity/structure";
-import { postSchema } from "./src/lib/sanity/schema";
+import {
+  ctaObject,
+  seoObject,
+  sectionSettingsObject,
+  navItemObject,
+  sectionHero,
+  sectionBenefits,
+  sectionProcess,
+  sectionFAQ,
+  sectionCTA,
+  sectionContentSplit,
+  sectionRichText,
+  pageDocument,
+  postDocument,
+  catalogItemDocument,
+  siteSettingsDocument,
+} from "./src/lib/sanity/schemas";
 
 export default defineConfig({
   name: "default",
-  title: "Studio",
+  title: "Ranking Agencia",
 
   projectId: "e6n3tgu1",
   dataset: "production",
 
-  plugins: [structureTool()],
+  plugins: [
+    structureTool({
+      structure: (S) =>
+        S.list()
+          .title("Contenido")
+          .items([
+            S.listItem()
+              .title("Configuración del Sitio")
+              .child(
+                S.document()
+                  .schemaType("siteSettings")
+                  .documentId("siteSettings")
+              ),
+            S.divider(),
+            S.documentTypeListItem("page").title("Páginas"),
+            S.documentTypeListItem("post").title("Blog"),
+            S.documentTypeListItem("catalogItem").title("Catálogo"),
+          ]),
+    }),
+  ],
 
   schema: {
-    types: [postSchema],
+    types: [
+      // Shared objects
+      ctaObject,
+      seoObject,
+      sectionSettingsObject,
+      navItemObject,
+      // Sections
+      sectionHero,
+      sectionBenefits,
+      sectionProcess,
+      sectionFAQ,
+      sectionCTA,
+      sectionContentSplit,
+      sectionRichText,
+      // Documents
+      pageDocument,
+      postDocument,
+      catalogItemDocument,
+      siteSettingsDocument,
+    ],
   },
 });
