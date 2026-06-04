@@ -86,6 +86,26 @@ export const homeQuery = groq`
       title,
       content,
       settings
+    },
+
+    _type == "sectionCards" => {
+      title,
+      subtitle,
+      columns,
+      cardStyle,
+      bgColor,
+      textAlign,
+      items[]{
+        _key,
+        badge,
+        image,
+        title,
+        description,
+        linkLabel,
+        linkUrl
+      },
+      cta,
+      settings
     }
   }
 }
@@ -176,6 +196,26 @@ export const pageBySlugQuery = groq`
     _type == "sectionRichText" => {
       title,
       content,
+      settings
+    },
+
+    _type == "sectionCards" => {
+      title,
+      subtitle,
+      columns,
+      cardStyle,
+      bgColor,
+      textAlign,
+      items[]{
+        _key,
+        badge,
+        image,
+        title,
+        description,
+        linkLabel,
+        linkUrl
+      },
+      cta,
       settings
     }
   }

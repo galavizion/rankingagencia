@@ -39,6 +39,7 @@ export const pageDocument = defineType({
         { type: "sectionCTA" },
         { type: "sectionContentSplit" },
         { type: "sectionRichText" },
+        { type: "sectionCards" },
       ],
     }),
   ],

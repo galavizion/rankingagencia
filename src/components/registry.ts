@@ -4,6 +4,7 @@ import SectionProcess from "./sections/SectionProcess.astro";
 import SectionFAQ from "./sections/SectionFAQ.astro";
 import SectionCTA from "./sections/SectionCTA.astro";
 import SectionContentSplit from "./sections/SectionContentSplit.astro";
+import SectionCards from "./sections/SectionCards.astro";
 
 export const sectionRegistry = {
   sectionHero: SectionHero,
@@ -12,6 +13,7 @@ export const sectionRegistry = {
   sectionFAQ: SectionFAQ,
   sectionCTA: SectionCTA,
   sectionContentSplit: SectionContentSplit,
+  sectionCards: SectionCards,
 } as const;
 
 export type SectionType = keyof typeof sectionRegistry;

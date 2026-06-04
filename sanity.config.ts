@@ -12,6 +12,8 @@ import {
   sectionCTA,
   sectionContentSplit,
   sectionRichText,
+  sectionCards,
+  // Documents
   pageDocument,
   postDocument,
   catalogItemDocument,
@@ -61,6 +63,7 @@ export default defineConfig({
       sectionCTA,
       sectionContentSplit,
       sectionRichText,
+      sectionCards,
       // Documents
       pageDocument,
       postDocument,

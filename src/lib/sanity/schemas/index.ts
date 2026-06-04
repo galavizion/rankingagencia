@@ -9,6 +9,7 @@ export { sectionFAQ } from "./sections/sectionFAQ";
 export { sectionCTA } from "./sections/sectionCTA";
 export { sectionContentSplit } from "./sections/sectionContentSplit";
 export { sectionRichText } from "./sections/sectionRichText";
+export { sectionCards } from "./sections/sectionCards";
 
 // Documents
 export { pageDocument } from "./documents/page";
