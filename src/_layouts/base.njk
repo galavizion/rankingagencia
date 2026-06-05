@@ -44,5 +44,16 @@
     </div>
   </footer>
 
+  <script>
+    window.BOT_CONFIG = {
+      name:         {{ botconfig.name | dump | safe }},
+      avatar:       {{ botconfig.avatar | dump | safe }},
+      greeting:     {{ botconfig.greeting | dump | safe }},
+      systemPrompt: {{ botconfig.systemPrompt | dump | safe }},
+      voiceEnabled: {{ botconfig.voiceEnabled | dump | safe }}
+    };
+  </script>
+  <script src="/assets/js/chat.js" defer></script>
+
 </body>
 </html>
