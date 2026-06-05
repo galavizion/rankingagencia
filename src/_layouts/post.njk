@@ -1,0 +1,34 @@
+---
+layout: base.njk
+---
+
+<article class="post section">
+  <div class="container post__container">
+    <header class="post__header">
+      {% if tags %}
+      <div class="post-card__tags">
+        {% for tag in tags %}
+        {% if tag != "posts" %}
+        <span class="tag">{{ tag }}</span>
+        {% endif %}
+        {% endfor %}
+      </div>
+      {% endif %}
+      <h1>{{ title }}</h1>
+      <time class="post__date" datetime="{{ page.date | date('yyyy-MM-dd') }}">{{ page.date | date('dd MMM yyyy') }}</time>
+    </header>
+
+    {% if image %}
+    <img class="post__cover" src="{{ image }}" alt="{{ title }}" />
+    {% endif %}
+
+    <div class="post__content">
+      {{ content | safe }}
+    </div>
+
+    <div class="post__cta">
+      <p>¿Te fue útil este artículo? Cuéntanos en qué está tu negocio.</p>
+      <a class="btn btn--primary" href="https://wa.me/528180000000?text=Le%C3%AD%20su%20blog%20y%20quiero%20hablar" target="_blank" rel="noopener">Hablar con un especialista</a>
+    </div>
+  </div>
+</article>

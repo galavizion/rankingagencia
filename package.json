@@ -1,29 +1,12 @@
 {
-  "name": "la-bodega-site",
+  "name": "rankingagencia",
   "version": "1.0.0",
-  "type": "module",
+  "description": "Ranking Agencia — Landing de conversión",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
-  },
-  "dependencies": {
-    "@astrojs/react": "^5.0.5",
-    "@portabletext/react": "^6.0.2",
-    "@portabletext/to-html": "^5.0.1",
-    "@sanity/astro": "^3.4.0",
-    "@sanity/client": "^7.16.0",
-    "@sanity/image-url": "^2.0.3",
-    "astro": "^6.3.7",
-    "groq": "^5.12.0",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
-    "sanity": "^5.26.0",
-    "swiper": "^12.1.2"
+    "dev": "eleventy --serve",
+    "build": "eleventy"
   },
   "devDependencies": {
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3"
+    "@11ty/eleventy": "^3.0.0"
   }
 }

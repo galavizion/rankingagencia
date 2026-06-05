@@ -1,0 +1,50 @@
+---
+layout: base.njk
+title: Blog
+description: Artículos sobre SEO técnico, desarrollo headless y sistemas de IA para negocios.
+permalink: /blog/
+---
+
+<section class="blog-hero section">
+  <div class="container">
+    <p class="section__label">Conocimiento sin filtro</p>
+    <h1 class="section__title">Blog de Ranking Agencia</h1>
+    <p class="blog-hero__sub">SEO técnico, desarrollo headless y sistemas de IA que facturan.</p>
+  </div>
+</section>
+
+<section class="blog-list section">
+  <div class="container">
+    {% if collections.posts.length %}
+    <div class="posts__grid">
+      {% for post in collections.posts %}
+      <article class="post-card">
+        {% if post.data.image %}
+        <a href="{{ post.url }}" class="post-card__img-wrap">
+          <img src="{{ post.data.image }}" alt="{{ post.data.title }}" loading="lazy" />
+        </a>
+        {% endif %}
+        <div class="post-card__body">
+          {% if post.data.tags %}
+          <div class="post-card__tags">
+            {% for tag in post.data.tags %}
+            {% if tag != "posts" %}
+            <span class="tag">{{ tag }}</span>
+            {% endif %}
+            {% endfor %}
+          </div>
+          {% endif %}
+          <h2><a href="{{ post.url }}">{{ post.data.title }}</a></h2>
+          <p class="post-card__excerpt">{{ post.data.excerpt or post.templateContent | truncate(120) }}</p>
+          <div class="post-card__meta">
+            <time datetime="{{ post.date | date('yyyy-MM-dd') }}">{{ post.date | date('dd MMM yyyy') }}</time>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="blog-empty">Los artículos están en camino. Mientras tanto, <a href="https://wa.me/528180000000" target="_blank" rel="noopener">habla con nosotros en WhatsApp</a>.</p>
+    {% endif %}
+  </div>
+</section>

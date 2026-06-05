@@ -1,3 +1,0 @@
-Team: Alejandro (Ranking Agencia)
-Site: https://TU-DOMINIO.com
-Tech: Astro (static), SEO + Ads + CRO
