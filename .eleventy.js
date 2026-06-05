@@ -1,6 +1,5 @@
 module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("src/assets");
-  eleventyConfig.addPassthroughCopy("src/admin");
 
   eleventyConfig.addFilter("date", function (value, format) {
     const d = value === "now" ? new Date() : new Date(value);
