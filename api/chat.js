@@ -29,7 +29,7 @@ module.exports = async (req, res) => {
           { role: "system", content: systemPrompt || "Eres un asistente útil." },
           ...messages,
         ],
-        max_tokens: 500,
+        max_tokens: 180,
         temperature: 0.7,
       }),
     });
