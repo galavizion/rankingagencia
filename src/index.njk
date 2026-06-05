@@ -53,24 +53,44 @@ description: Reemplazamos sitios lentos de WordPress por plataformas Headless qu
           </div>
           <div class="mockup__body">
             <div class="mockup__scores">
+
               <div class="score-ring">
-                <div class="score-ring__circle score-ring__circle--purple">
-                  <span class="score-ring__val">99</span>
-                </div>
+                <svg class="ring-svg" viewBox="0 0 80 80" width="80" height="80">
+                  <circle cx="40" cy="40" r="32" fill="none" stroke="#f0eef8" stroke-width="7"/>
+                  <circle cx="40" cy="40" r="32" fill="none" stroke="#8c7ac6" stroke-width="7"
+                    stroke-linecap="round" stroke-dasharray="201.1" stroke-dashoffset="201.1"
+                    transform="rotate(-90 40 40)" class="ring-arc" data-target="99" data-max="100"/>
+                  <text x="40" y="45" text-anchor="middle" class="ring-num" fill="#8c7ac6" font-size="18" font-weight="800" font-family="Plus Jakarta Sans,sans-serif">
+                    <tspan class="ring-count" data-target="99" data-suffix="">0</tspan>
+                  </text>
+                </svg>
                 <span class="score-ring__label">Performance</span>
               </div>
+
               <div class="score-ring">
-                <div class="score-ring__circle score-ring__circle--teal">
-                  <span class="score-ring__val">A+</span>
-                </div>
+                <svg class="ring-svg" viewBox="0 0 80 80" width="80" height="80">
+                  <circle cx="40" cy="40" r="32" fill="none" stroke="#e0faf5" stroke-width="7"/>
+                  <circle cx="40" cy="40" r="32" fill="none" stroke="#2ec4a5" stroke-width="7"
+                    stroke-linecap="round" stroke-dasharray="201.1" stroke-dashoffset="201.1"
+                    transform="rotate(-90 40 40)" class="ring-arc" data-target="100" data-max="100"/>
+                  <text x="40" y="47" text-anchor="middle" class="ring-num" fill="#2ec4a5" font-size="14" font-weight="800" font-family="Plus Jakarta Sans,sans-serif">A+</text>
+                </svg>
                 <span class="score-ring__label">SEO</span>
               </div>
+
               <div class="score-ring">
-                <div class="score-ring__circle score-ring__circle--pink">
-                  <span class="score-ring__val">98</span>
-                </div>
+                <svg class="ring-svg" viewBox="0 0 80 80" width="80" height="80">
+                  <circle cx="40" cy="40" r="32" fill="none" stroke="#fceef6" stroke-width="7"/>
+                  <circle cx="40" cy="40" r="32" fill="none" stroke="#c84f92" stroke-width="7"
+                    stroke-linecap="round" stroke-dasharray="201.1" stroke-dashoffset="201.1"
+                    transform="rotate(-90 40 40)" class="ring-arc" data-target="98" data-max="100"/>
+                  <text x="40" y="45" text-anchor="middle" class="ring-num" fill="#c84f92" font-size="18" font-weight="800" font-family="Plus Jakarta Sans,sans-serif">
+                    <tspan class="ring-count" data-target="98" data-suffix="">0</tspan>
+                  </text>
+                </svg>
                 <span class="score-ring__label">CRV</span>
               </div>
+
             </div>
             <div class="mockup__speed">
               <span class="mockup__speed-dot"></span>
@@ -301,3 +321,44 @@ description: Reemplazamos sitios lentos de WordPress por plataformas Headless qu
     </div>
   </div>
 </section>
+
+<script>
+(function () {
+  const CIRC = 201.1;
+  const DURATION = 1400;
+
+  function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+
+  function animateRings() {
+    document.querySelectorAll('.ring-arc').forEach(function (arc) {
+      const pct    = parseInt(arc.dataset.target) / parseInt(arc.dataset.max);
+      const target = CIRC * (1 - pct);
+      const start  = performance.now();
+      (function tick(now) {
+        var progress = Math.min((now - start) / DURATION, 1);
+        arc.style.strokeDashoffset = CIRC - (CIRC - target) * easeOutCubic(progress);
+        if (progress < 1) requestAnimationFrame(tick);
+      })(start);
+    });
+
+    document.querySelectorAll('.ring-count').forEach(function (el) {
+      var target = parseInt(el.dataset.target);
+      var start  = performance.now();
+      (function tick(now) {
+        var progress = Math.min((now - start) / DURATION, 1);
+        el.textContent = Math.round(easeOutCubic(progress) * target);
+        if (progress < 1) requestAnimationFrame(tick);
+      })(start);
+    });
+  }
+
+  var mockup = document.querySelector('.hero__mockup');
+  if (!mockup) return;
+
+  var observer = new IntersectionObserver(function (entries) {
+    if (entries[0].isIntersecting) { animateRings(); observer.disconnect(); }
+  }, { threshold: 0.4 });
+
+  observer.observe(mockup);
+})();
+</script>
