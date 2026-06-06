@@ -59,11 +59,9 @@
     inputEl.focus();
 
     if (history.length === 0) {
-      addMessage("bot", GREETING);
-      if (VOICE_ON && autoSpeak && !greetingDone) {
-        greetingDone = true;
-        speak(GREETING);
-      }
+      var speakNow = VOICE_ON && autoSpeak && !greetingDone;
+      greetingDone = true;
+      addMessageTyped("bot", GREETING, speakNow);
     }
   }
 
@@ -85,6 +83,35 @@
     div.innerHTML = `<div class="chat-bubble">${escapeHtml(text)}</div>`;
     messagesEl.appendChild(div);
     messagesEl.scrollTop = messagesEl.scrollHeight;
+    return div;
+  }
+
+  // Typewriter: escribe letra por letra mientras habla en voz alta
+  function addMessageTyped(role, text, withVoice) {
+    const div    = document.createElement("div");
+    div.className = `chat-msg chat-msg--${role}`;
+    const bubble = document.createElement("div");
+    bubble.className = "chat-bubble";
+    div.appendChild(bubble);
+    messagesEl.appendChild(div);
+
+    // Arrancar voz y escritura al mismo tiempo
+    if (VOICE_ON && withVoice) speak(text);
+
+    var escaped = escapeHtml(text);
+    var i = 0;
+    var speed = 28; // ms por caracter
+
+    (function type() {
+      if (i <= escaped.length) {
+        bubble.innerHTML = escaped.slice(0, i) +
+          (i < escaped.length ? '<span class="cursor">|</span>' : "");
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+        i++;
+        setTimeout(type, speed);
+      }
+    })();
+
     return div;
   }
 
@@ -127,10 +154,8 @@
       typing.remove();
 
       const reply = data.reply || "Lo siento, no pude procesar tu mensaje.";
-      addMessage("bot", reply);
       history.push({ role: "assistant", content: reply });
-
-      if (VOICE_ON && micActive) speak(reply);
+      addMessageTyped("bot", reply, VOICE_ON && micActive);
     } catch {
       typing.remove();
       addMessage("bot", "Hubo un error de conexión. Intenta de nuevo.");
