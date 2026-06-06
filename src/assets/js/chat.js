@@ -43,20 +43,28 @@
   const sendBtn    = widget.querySelector(".chat-send");
   const micBtn     = widget.querySelector(".chat-mic");
 
-  let history   = [];
-  let isOpen    = false;
-  let isLoading = false;
-  let recognition = null;
-  let micActive = false;
+  let history      = [];
+  let isOpen       = false;
+  let isLoading    = false;
+  let recognition  = null;
+  let micActive    = false;
+  let greetingDone = false;  // para no repetir el saludo de voz
 
   // ── Abrir / cerrar ────────────────────────────────────────────────────────
-  function openChat() {
+  function openChat(autoSpeak) {
     isOpen = true;
     chatWindow.hidden = false;
     chatWindow.classList.add("chat-window--open");
     toggleBtn.classList.add("chat-toggle--open");
     inputEl.focus();
-    if (history.length === 0) addMessage("bot", GREETING);
+
+    if (history.length === 0) {
+      addMessage("bot", GREETING);
+      if (VOICE_ON && autoSpeak && !greetingDone) {
+        greetingDone = true;
+        speak(GREETING);
+      }
+    }
   }
 
   function closeChat() {
@@ -66,7 +74,8 @@
     setTimeout(() => { chatWindow.hidden = true; }, 280);
   }
 
-  toggleBtn.addEventListener("click", () => isOpen ? closeChat() : openChat());
+  // Clic manual → siempre habla el saludo la primera vez
+  toggleBtn.addEventListener("click", () => isOpen ? closeChat() : openChat(true));
   closeBtn.addEventListener("click", closeChat);
 
   // ── Mensajes ──────────────────────────────────────────────────────────────
@@ -185,14 +194,39 @@
   function speak(text) {
     if (!window.speechSynthesis) return;
     window.speechSynthesis.cancel();
-    const utt = new SpeechSynthesisUtterance(text);
-    utt.lang = "es-MX";
-    utt.rate = 1.05;
-    window.speechSynthesis.speak(utt);
+
+    // Esperar a que las voces estén cargadas
+    function doSpeak() {
+      var utt  = new SpeechSynthesisUtterance(text);
+      var voices = window.speechSynthesis.getVoices();
+
+      // Preferir voz femenina en español latino si existe
+      var preferred = voices.find(function(v) {
+        return v.lang.startsWith("es") && /female|mujer|paulina|mónica|monica|jorge|juan/i.test(v.name);
+      }) || voices.find(function(v) {
+        return v.lang.startsWith("es");
+      });
+
+      if (preferred) utt.voice = preferred;
+      utt.lang  = "es-MX";
+      utt.rate  = 1.0;
+      utt.pitch = 1.05;
+      window.speechSynthesis.speak(utt);
+    }
+
+    // Las voces pueden no estar listas en la primera llamada
+    if (window.speechSynthesis.getVoices().length > 0) {
+      doSpeak();
+    } else {
+      window.speechSynthesis.addEventListener("voiceschanged", doSpeak, { once: true });
+    }
   }
 
-  // ── Abrir automáticamente después de 8s si no interactuaron ──────────────
+  // ── Abrir automáticamente después de 8s ───────────────────────────────────
+  // Nota: el saludo de voz en auto-open solo funciona si el usuario ya
+  // interactuó con la página (restricción de autoplay de los navegadores).
+  // Si abrió el chat manualmente, siempre funciona.
   setTimeout(() => {
-    if (!isOpen) openChat();
+    if (!isOpen) openChat(false); // false = no intenta hablar sola (autoplay bloqueado)
   }, 8000);
 })();
